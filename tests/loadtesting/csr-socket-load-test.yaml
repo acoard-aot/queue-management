@@ -6,10 +6,12 @@ config:
     maxSockets: 3
   defaults:
     headers:
-      Authorization:  Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJZUktnVzA0QmJ4QUxpODQ1cy1DdjRURElkMkdZWDc2aHgzM2RIekFCUEZjIn0.eyJleHAiOjE2MDMxMzQwMzUsImlhdCI6MTYwMzEzMzczNSwianRpIjoiOTJmNmI4NDAtZGJlNS00YWE4LThlODctOTJkYjU3NjNiOGYwIiwiaXNzIjoiaHR0cHM6Ly9kZXYub2lkYy5nb3YuYmMuY2EvYXV0aC9yZWFsbXMvdnRrYXlxNGMiLCJzdWIiOiI4YWQ2NmMwMy0wNDVkLTQxZGYtODYwMS1hYjJjNjhlMjE3NzMiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJhZG1pbi1jbGkiLCJzZXNzaW9uX3N0YXRlIjoiNGE4M2Y4ODctYWEwNy00YTg3LWI0NDEtYmU2ZGRiNWU1MzMwIiwiYWNyIjoiMSIsInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwibmFtZSI6IkFkbWluIEFkbWluIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJnaXZlbl9uYW1lIjoiQWRtaW4iLCJmYW1pbHlfbmFtZSI6IkFkbWluIn0.W1xZmmw1hlUEg3yxVGAQuW2ozJ6a6gye9hkb18bHougrFqID6jgdYfANfVhDMMiBiBB7wGd87Sdrnqgh9_OnN3awZKesmy37PqdGRfyOituNNEJRKPwDtoBEJ2LkA8lCftdxdFQOpNuGcDDJb0QPQZRiXMdpihJdY-hRbP9AtMKq2hTQnb-nsYwPMWKuzF4jqu1iMihL86_bNTxuzhQL4RohyVaUc0N9ko2yLFa3vSjPCPlyKFgS2MDVo7HYfVdIO3UDA_FrB56wGDo4V6TlcmSSit-J8pLj0bkb-oJtVHvdnP-2LbIVqOx8XHVCo6M_qjDLcvfnFo-VyvL3gAJZeg
+      Authorization:  Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJZUktnVzA0QmJ4QUxpODQ1cy1DdjRURElkMkdZWDc2aHgzM2RIekFCUEZjIn0.eyJleHAiOjE2MDMxMzQzNjAsImlhdCI6MTYwMzEzNDA2MCwianRpIjoiZTc1Zjk2YzUtYzc2OS00N2Y2LWJkYjQtNzVjYjI1MmFlZTgwIiwiaXNzIjoiaHR0cHM6Ly9kZXYub2lkYy5nb3YuYmMuY2EvYXV0aC9yZWFsbXMvdnRrYXlxNGMiLCJzdWIiOiI4YWQ2NmMwMy0wNDVkLTQxZGYtODYwMS1hYjJjNjhlMjE3NzMiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJhZG1pbi1jbGkiLCJzZXNzaW9uX3N0YXRlIjoiNDNmYzEwNzktMzk1NS00NGQ1LWI4NGQtZGU1YTJkMmY1NjQwIiwiYWNyIjoiMSIsInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwibmFtZSI6IkFkbWluIEFkbWluIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJnaXZlbl9uYW1lIjoiQWRtaW4iLCJmYW1pbHlfbmFtZSI6IkFkbWluIn0.EToqWlADVfQiOmltRWN7qeLfGcOKWnPsq4anUjzc9Nu4E7VvBV4CeLl3oIDZ_NSUSq5meHruUSMaobVO8FkwoRTQWdiJLN0dyCFKTCGAWqgdfh7H9k-3vqv-bMtDpoSryRc126g2nt-NBfb-m9E35aHN6bTBb5a-ZlOzLov3ZAoaJOcaosjnGpEiyNnYGLalkG4kuOCR2z9Ic2aVzDeT4VeyIORAXvGW5dtGfsBgIrrR3ctdLHSdXGqPbyVQduup5Xvw5a00OI30eObaSdrhjXV9iThOP5dmSbHfKFg1i8UE3-Sg8dBI11D2AsBJOpqem0J0QXrcIxk7cCXDq5UETA
+
+
 
   phases:
-    - duration: 5
+    - duration: 1
       arrivalRate: 1
       name: Warm up
     # - duration: 10
@@ -23,8 +25,8 @@ scenarios:
   - name: "(HTTP) A user that logs in and lurks"
     weight: 75
     flow:
-      - get:
-        - url: "/queue"
+      # - get:
+      #   - url: "/queue"
       - get:
           url: "/api/v1/services/refresh/?office_id=3"
           # TODO - Any more requests?
