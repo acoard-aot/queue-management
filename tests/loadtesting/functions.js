@@ -18,7 +18,20 @@ KEYCLOAK_CLIENT = 'TODO'
 //     "confidential-port": 0
 //   }
 
-async function getAccessToken(username, password) {
+
+// This implementation assumes it never has to refresh a token and they never expire
+// As most load testing is short lived (minutes, not hours) this works fine.
+// let authToken = '';
+const authTokenList = {}
+async function getAuthToken(username, password){
+    if (authTokenList[username]) return authTokenList[username];
+    const newToken = await loginToKeycloak(username, password);
+    authTokenList[username] = newToken;
+    return newToken;
+}
+
+// Working
+async function loginToKeycloak(username, password) {
     const res = await fetch(`${KEYCLOAK_URI}/realms/vtkayq4c/protocol/openid-connect/token`, {
         "headers": {
             "accept": "*/*",
@@ -38,16 +51,27 @@ async function getAccessToken(username, password) {
     return body;
 }
 
+async function setAuthHeader(requestParams, context, ee, next) {
+    console.log('setAuthorizationHeader called');
+    const {access_token} = await getAuthToken('admin', 'admin')
+    requestParams.headers.Authorization = `Bearer ${access_token}`;
+    // console.log('setAuthHeader end', {requestParams})
+    next();
+}
+
 // Main / script start
 (async () => {
-    // const accessTokenFromRefresh = await getAccessTokenFromRefresh(REFRESH_TOKEN);
-    // console.log('\n\getAccessTokenFromRefresh Result:', {accessToken: accessTokenFromRefresh})
-
-    const accessToken = await getAccessToken('admin', 'admin');
-    console.log('\n\getAccessToken Result:', {accessToken: accessToken})
+    if (require.main === module){
+        console.log('SHOULD NOT SEE THIS WHEN RUNNING TESTS');
+        console.log('SHOULD see this when running functions directly')
+        const {access_token} = await loginToKeycloak('admin', 'admin');
+        console.log('\n\getAccessToken Result:', {access_token})
+    }
 })();
 
-
+module.exports = {
+    setAuthHeader
+}
 
 
 // Scrap - Old Fns, may be useful in future

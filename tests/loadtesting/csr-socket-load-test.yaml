@@ -1,17 +1,13 @@
 config:
   # Can toggle below
-  # target: "http://localhost:5000"
-  target: "https://dev-theq.pathfinder.gov.bc.ca"
-  http:
-    maxSockets: 3
-  defaults:
-    headers:
-      Authorization:  Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJZUktnVzA0QmJ4QUxpODQ1cy1DdjRURElkMkdZWDc2aHgzM2RIekFCUEZjIn0.eyJleHAiOjE2MDMxMzQzNjAsImlhdCI6MTYwMzEzNDA2MCwianRpIjoiZTc1Zjk2YzUtYzc2OS00N2Y2LWJkYjQtNzVjYjI1MmFlZTgwIiwiaXNzIjoiaHR0cHM6Ly9kZXYub2lkYy5nb3YuYmMuY2EvYXV0aC9yZWFsbXMvdnRrYXlxNGMiLCJzdWIiOiI4YWQ2NmMwMy0wNDVkLTQxZGYtODYwMS1hYjJjNjhlMjE3NzMiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJhZG1pbi1jbGkiLCJzZXNzaW9uX3N0YXRlIjoiNDNmYzEwNzktMzk1NS00NGQ1LWI4NGQtZGU1YTJkMmY1NjQwIiwiYWNyIjoiMSIsInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwibmFtZSI6IkFkbWluIEFkbWluIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJnaXZlbl9uYW1lIjoiQWRtaW4iLCJmYW1pbHlfbmFtZSI6IkFkbWluIn0.EToqWlADVfQiOmltRWN7qeLfGcOKWnPsq4anUjzc9Nu4E7VvBV4CeLl3oIDZ_NSUSq5meHruUSMaobVO8FkwoRTQWdiJLN0dyCFKTCGAWqgdfh7H9k-3vqv-bMtDpoSryRc126g2nt-NBfb-m9E35aHN6bTBb5a-ZlOzLov3ZAoaJOcaosjnGpEiyNnYGLalkG4kuOCR2z9Ic2aVzDeT4VeyIORAXvGW5dtGfsBgIrrR3ctdLHSdXGqPbyVQduup5Xvw5a00OI30eObaSdrhjXV9iThOP5dmSbHfKFg1i8UE3-Sg8dBI11D2AsBJOpqem0J0QXrcIxk7cCXDq5UETA
-
+  target: "http://localhost:5000"
+  # target: "https://dev-theq.pathfinder.gov.bc.ca"
+  # http:
+  #   maxSockets: 3
 
 
   phases:
-    - duration: 1
+    - duration: 3
       arrivalRate: 1
       name: Warm up
     # - duration: 10
@@ -22,15 +18,29 @@ config:
   processor: "./functions.js"
 
 scenarios:
-  - name: "(HTTP) A user that logs in and lurks"
+  - name: "(HTTP) CSR – Authenticated api route"
+    beforeRequest: 'setAuthHeader'
     weight: 75
     flow:
       # - get:
       #   - url: "/queue"
+      # TODO - Rest of requests, there's at least 5
       - get:
-          url: "/api/v1/services/refresh/?office_id=3"
-          # TODO - Any more requests?
+          url: "/api/v1/citizens/"
       - think: 1
+  
+  # WORKING - VERY SIMPLE BUT GETS 200s
+  # - name: "(Citizen)(HTTP) Unauthenticated public API routes"
+  #   # beforeRequest: 'setAuthHeader'
+  #   weight: 75
+  #   flow:
+  #     # - get:
+  #     #   - url: "/queue"
+  #     # TODO - Rest of requests, there's at least 5
+  #     - get:
+  #         # url: "/api/v1/services/refresh/?office_id=3"
+  #         url: "/api/v1/offices/1/slots/?service_id=1"
+  #     - think: 1
 
 
 

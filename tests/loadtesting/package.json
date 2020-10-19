@@ -4,7 +4,8 @@
   "description": "Load testing of CSRs on the queue-management application.",
   "main": "index.js",
   "scripts": {
-    "test": "node functions.js"
+    "dev": "node functions.js",
+    "tests": "npx artillery run csr-socket-load-test.yaml"
   },
   "repository": {
     "type": "git",
