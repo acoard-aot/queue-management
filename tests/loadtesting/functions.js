@@ -52,7 +52,7 @@ async function loginToKeycloak(username, password) {
 }
 
 async function setAuthHeader(requestParams, context, ee, next) {
-    console.log('setAuthorizationHeader called');
+    // console.log('setAuthorizationHeader called');
     const {access_token} = await getAuthToken('admin', 'admin')
     requestParams.headers.Authorization = `Bearer ${access_token}`;
     // console.log('setAuthHeader end', {requestParams})

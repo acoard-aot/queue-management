@@ -2,17 +2,17 @@ config:
   # Can toggle below
   target: "http://localhost:5000"
   # target: "https://dev-theq.pathfinder.gov.bc.ca"
-  # http:
-  #   maxSockets: 3
+  http:
+    maxSockets: 3
 
 
   phases:
     - duration: 3
       arrivalRate: 1
       name: Warm up
-    # - duration: 10
-    #   arrivalRate: 5
-    #   name: Ramp up load
+    - duration: 30
+      arrivalRate: 10
+      name: Ramp up load
   variables:
     greeting: ["hello", "goedemorgen", "добрый день", "guten tag", "bonjour", "hola"]
   processor: "./functions.js"
@@ -28,19 +28,13 @@ scenarios:
       - get:
           url: "/api/v1/citizens/"
       - think: 1
-  
-  # WORKING - VERY SIMPLE BUT GETS 200s
-  # - name: "(Citizen)(HTTP) Unauthenticated public API routes"
-  #   # beforeRequest: 'setAuthHeader'
-  #   weight: 75
-  #   flow:
-  #     # - get:
-  #     #   - url: "/queue"
-  #     # TODO - Rest of requests, there's at least 5
-  #     - get:
-  #         # url: "/api/v1/services/refresh/?office_id=3"
-  #         url: "/api/v1/offices/1/slots/?service_id=1"
-  #     - think: 1
+  - name: "(Citizen)(HTTP) Unauthenticated public API routes"
+    weight: 75
+    flow:
+      - get:
+          # url: "/api/v1/services/refresh/?office_id=3"
+          url: "/api/v1/offices/1/slots/?service_id=1"
+      - think: 1
 
 
 
