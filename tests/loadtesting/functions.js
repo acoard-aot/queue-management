@@ -21,7 +21,7 @@ KEYCLOAK_CLIENT = 'TODO'
 
 // This implementation assumes it never has to refresh a token and they never expire
 // As most load testing is short lived (minutes, not hours) this works fine.
-// let authToken = '';
+// Cache auth tokens to a plain old JavaScript object
 const authTokenList = {}
 async function getAuthToken(username, password){
     if (authTokenList[username]) return authTokenList[username];
@@ -52,15 +52,18 @@ async function loginToKeycloak(username, password) {
 }
 
 async function setAuthHeader(requestParams, context, ee, next) {
-    // console.log('setAuthorizationHeader called');
     const {access_token} = await getAuthToken('admin', 'admin')
-    requestParams.headers.Authorization = `Bearer ${access_token}`;
+    // HTTP requests use Authorization
+    requestParams.headers.Authorization = `Bearer ${access_token}`
+    // Websocket requests use oidc-jwt cookie
+    requestParams.headers.cookie = `oidc-jwt=${access_token}`
     // console.log('setAuthHeader end', {requestParams})
     next();
 }
 
 // Main / script start
 (async () => {
+    // Only execute if script is called directly, not if imported.
     if (require.main === module){
         console.log('SHOULD NOT SEE THIS WHEN RUNNING TESTS');
         console.log('SHOULD see this when running functions directly')
