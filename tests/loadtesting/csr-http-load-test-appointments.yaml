@@ -1,0 +1,38 @@
+config:
+  # Can toggle below
+  target: "http://localhost:5000"
+  # target: "https://dev-theq.pathfinder.gov.bc.ca"
+  http:
+    maxSockets: 3
+
+
+  phases:
+    # - duration: 3
+    #   arrivalRate: 1
+    #   name: Warm up
+    - duration: 30
+      arrivalRate: 10
+      name: Ramp up load
+  variables:
+  processor: "./functions.js"
+
+scenarios:
+  - name: "(HTTP) CSR – Authenticated api route"
+    beforeRequest: 'setAuthHeader'
+    weight: 75
+    flow:
+      - get:
+          url: "/api/v1/citizens/"
+      - get:
+          url: "/api/v1/appointments/"
+      - get:
+          url: "/api/v1/categories/"
+      - get:
+          url: "/api/v1/channels/"
+      - get:
+          url: "/api/v1/services/?office_id=1"
+
+
+
+# TODO - Add SocketIO tests --  
+# engine: "socketio"
