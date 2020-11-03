@@ -47,7 +47,9 @@ class AppointmentPut(Resource):
         # Should delete draft appointment, and free up slot, before booking.
         # Clear up a draft if one was previously created by user reserving this time.
         if json_data.get('appointment_draft_id'):
-            Appointment.delete_draft([int(json_data['appointment_draft_id'])])
+            draft_id_to_delete = int(json_data['appointment_draft_id'])
+            Appointment.delete_draft([draft_id_to_delete])
+            socketio.emit('appointment_delete', draft_id_to_delete)
 
         if is_public_user_appt:
             office_id = json_data.get('office_id')
@@ -111,11 +113,13 @@ class AppointmentPut(Resource):
         if "checked_in_time" in json_data:
             schema = 'appointment_checkin'
 
-        SnowPlow.snowplow_appointment(None, csr, appointment, schema)
+        if not appointment.is_draft:
+            SnowPlow.snowplow_appointment(None, csr, appointment, schema)
 
         result = self.appointment_schema.dump(appointment)
 
-        socketio.emit('appointment_refresh')
+        socketio.emit('appointment_update', result.data)
+        
 
         return {"appointment": result.data,
                 "errors": result.errors}, 200

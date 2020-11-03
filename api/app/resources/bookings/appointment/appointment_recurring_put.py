@@ -51,10 +51,12 @@ class AppointmentRecurringPut(Resource):
                 return {"message": warning}, 422
 
             db.session.add(appointment)
-            socketio.emit('appointment_refresh')
             db.session.commit()
 
+
         result = self.appointment_schema.dump(appointments)
+
+        socketio.emit('appointment_update', result.data)
 
         return {
             "appointments": result.data,

@@ -51,7 +51,9 @@ class AppointmentPost(Resource):
         # Should delete draft appointment, and free up slot, before booking.
         # Clear up a draft if one was previously created by user reserving this time.
         if json_data.get('appointment_draft_id'):
-            Appointment.delete_draft([int(json_data['appointment_draft_id'])])
+            draft_id_to_delete = int(json_data['appointment_draft_id'])
+            Appointment.delete_draft([draft_id_to_delete])
+            socketio.emit('appointment_delete', draft_id_to_delete)
 
         is_blackout_appt = json_data.get('blackout_flag', 'N') == 'Y'
         csr = None
@@ -163,7 +165,7 @@ class AppointmentPost(Resource):
 
             result = self.appointment_schema.dump(appointment)
 
-            socketio.emit('appointment_refresh')
+            socketio.emit('appointment_create', result.data)
 
             return {"appointment": result.data,
                     "errors": result.errors}, 201
