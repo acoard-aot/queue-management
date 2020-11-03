@@ -34,13 +34,27 @@ scenarios:
       - log: "exam_types running"
       - get:
           url: "/api/v1/exam_types/"
+      - log: "creating draft appointmen running"
+      - post:
+          url: "/api/v1/appointments/draft"
+          json:
+            start_time: "2020-11-05T18:00:00Z"
+            end_time: "2020-11-05T18:15:00Z"
+            office_id: 7
+          capture:
+            json: "$.appointment.appointment_id"
+            as: "draftappointment_Id"
+          strict: false # We don't mind if id can't be captured and the next requests 404s
+      - log: "deleting appointment {{draftappointment_Id}} running"
+      - delete:
+          url: "/api/v1/appointments/draft/{{draftappointment_Id}}/"
       - log: "post appointments appointment running"
       - post:
           # url: "/api/v1/appointments/draft"
           url: "/api/v1/appointments/"
           json:
-            start_time: "2020-11-05T17:45:00Z"
-            end_time: "2020-11-05T18:00:00Z"
+            start_time: "2020-11-05T18:00:00Z"
+            end_time: "2020-11-05T18:15:00Z"
             service_id: 21
             citizen_name: "name from test"
             contact_information: ""
@@ -54,8 +68,8 @@ scenarios:
       - put:
           url: "/api/v1/appointments/{{appointment_id}}/"
           json:
-            start_time: "2020-11-05T17:45:00Z"
-            end_time: "2020-11-05T18:00:00Z"
+            start_time: "2020-11-05T18:00:00Z"
+            end_time: "2020-11-05T18:15:00Z"
             service_id: 21
             citizen_name: "updated name from test"
             contact_information: ""
@@ -68,6 +82,7 @@ scenarios:
       - log: "delet appointment {{updateappointment_id}} running"
       - delete:
           url: "/api/v1/appointments/{{appointment_id}}/"
+
       #     capture:
       #       json: "$.appointmentid"
       #       as: "appointment"
