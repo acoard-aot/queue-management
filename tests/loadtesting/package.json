@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "node functions.js",
-    "tests": "npx artillery run csr-http-load-test-appointments.yaml"
+    "tests": "npx artillery run csr-http-load-test-appointments.yaml",
+    "tests-socket": "npx artillery run csr-socket-load-test.yaml"
   },
   "repository": {
     "type": "git",
