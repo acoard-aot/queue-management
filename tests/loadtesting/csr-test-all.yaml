@@ -2,22 +2,33 @@ config:
   # Can toggle below
   # target: "http://localhost:5000"
   target: "https://dev-theq.pathfinder.gov.bc.ca"
+  
+  # changing to test requires updating function.js as it gets keycloak token.
+  # target: https://test-theq.apps.silver.devops.gov.bc.ca
+  # target: "https://test-theq.pathfinder.gov.bc.ca"
+  
   socketio:
     path: "/api/v1/socket.io"
     transports: ["websocket"]
     extraHeaders:
-      Cookie: "oidc-jwt=eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJZUktnVzA0QmJ4QUxpODQ1cy1DdjRURElkMkdZWDc2aHgzM2RIekFCUEZjIn0.eyJleHAiOjE2MDQ5NDY4NzQsImlhdCI6MTYwNDk0NjU3NCwianRpIjoiYWQ4ZjgwMWYtNzFmZS00MGIxLTg5MDAtOGFkNjhmNWEzMWI5IiwiaXNzIjoiaHR0cHM6Ly9kZXYub2lkYy5nb3YuYmMuY2EvYXV0aC9yZWFsbXMvdnRrYXlxNGMiLCJhdWQiOlsiY2Ztcy1kZXYiLCJhY2NvdW50Il0sInN1YiI6IjhhZDY2YzAzLTA0NWQtNDFkZi04NjAxLWFiMmM2OGUyMTc3MyIsInR5cCI6IkJlYXJlciIsImF6cCI6ImNmbXMtZGV2LXN0YWZmIiwic2Vzc2lvbl9zdGF0ZSI6Ijk5MmYxN2ZjLTNkN2MtNDFkNy1hMjYxLTQzNWU5MTYzODYyMiIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly9kZXYtdGhlcS5wYXRoZmluZGVyLmdvdi5iYy5jYS8qIiwibG9jYWxob3N0OjgwODAiLCJodHRwOi8vbG9jYWxob3N0OjUwMDAiLCJodHRwczovL2Rldi10aGVxLmFwcHMuc2lsdmVyLmRldm9wcy5nb3YuYmMuY2EvKiIsIioiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iLCJpbnRlcm5hbF91c2VyIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoiQWRtaW4gQWRtaW4iLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsImdpdmVuX25hbWUiOiJBZG1pbiIsImZhbWlseV9uYW1lIjoiQWRtaW4ifQ.UCzlN9ishkckISUFxNubnzHZBJdF9kKl8jIGM0LIdSqU3YhDBpKglJUZPnhkwpgjzdE7EdfD1Ozk12oprUsXzMfBkjqg3q86nIWUbStSh9ILMtPyiE3GLBHfvXcL-uZvQf95MjxmnLfZO7ArGS0qPG68UJJRjFiQ0YKCuZqYuzC7WrQGjEEI4Y2Gw_aL973_HsJEpk0TiXnSvCG-vZf-LlCdU5JiDPSOuhvf6R4bOt7X8CPGIwViSAWaixY-dPB9KoW_LxjsTAxbPIdhA1kdmT-6fUUOz01tg8AGnZVD0EIOtimAz2Cg0TwA1Co4ZkelysqA_eqHFXq9PMcPW76nhg"
+      Cookie: "oidc-jwt=eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJZUktnVzA0QmJ4QUxpODQ1cy1DdjRURElkMkdZWDc2aHgzM2RIekFCUEZjIn0.eyJleHAiOjE2MDQ5NjA1NjEsImlhdCI6MTYwNDk2MDI2MSwianRpIjoiYWFmNWFjZDMtNjBhMy00NjRkLTgxODItOGMxOTYwYTBjZGJmIiwiaXNzIjoiaHR0cHM6Ly9kZXYub2lkYy5nb3YuYmMuY2EvYXV0aC9yZWFsbXMvdnRrYXlxNGMiLCJhdWQiOlsiY2Ztcy1kZXYiLCJhY2NvdW50Il0sInN1YiI6IjhhZDY2YzAzLTA0NWQtNDFkZi04NjAxLWFiMmM2OGUyMTc3MyIsInR5cCI6IkJlYXJlciIsImF6cCI6ImNmbXMtZGV2LXN0YWZmIiwic2Vzc2lvbl9zdGF0ZSI6ImZjMDQxMzU0LWE4NWMtNDRhZS1hZDMxLTcwZmIxMmQxZDhmZiIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly9kZXYtdGhlcS5wYXRoZmluZGVyLmdvdi5iYy5jYS8qIiwibG9jYWxob3N0OjgwODAiLCJodHRwOi8vbG9jYWxob3N0OjUwMDAiLCJodHRwczovL2Rldi10aGVxLmFwcHMuc2lsdmVyLmRldm9wcy5nb3YuYmMuY2EvKiIsIioiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iLCJpbnRlcm5hbF91c2VyIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoiQWRtaW4gQWRtaW4iLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsImdpdmVuX25hbWUiOiJBZG1pbiIsImZhbWlseV9uYW1lIjoiQWRtaW4ifQ.mb5ycos-l4n_8VATd2s_PXokX-Q_ATp_Qxplb23xE-Wan_T_XdyAXHO2mGeETezIjsgHkl-fHY2ooo4Dp3-r3HbbVSRv0DeYrbOT4JHqhPafOtIK4KK5HZGk-e8nFgywsGEnM3QNSpOp-zAyrLKH17YnphYZZX7OrVoaU4j39vYIFmbf08vRWflJV8uA-I3ufrYlOEPa1uQl9XX0kIhizx9oUk216vyAj_cSNm41W0zevz-vBcAy9BOOTTzt8xpRSvr-0UYHTPx_laAF7y30_6B6uysw5G6etOgKS--ILkZplNJ-cAArPUrQe_44Jyf99_uLkRSJChsQcKfMisQt0Q"
+      # Cookie: "oidc-jwt={{ $processEnvironemnt.JWT }}"
   http:
     maxSockets: 3
 
   phases:
-    - duration: 3
+    - name: Warm up
+      duration: 3
       arrivalRate: 1
-      name: Warm up
-    # - duration: 30
-    #   arrivalRate: 10
-    #   name: Ramp up load
-  variables:
+    - name: Ramp up load (max 200 users)
+      duration: 30
+      arrivalRate: 10
+      rampTo: 50
+      maxVusers: 200
+    - name: Sustained max load. (max 200 users)
+      duration: 60
+      arrivalRate: 50
+      maxVusers: 200   
   processor: "./functions.js"
 
 scenarios:
@@ -26,7 +37,6 @@ scenarios:
   - name: "CSR - Websockets"
     beforeRequest: 'setAuthHeader'
     engine: "socketio"
-
     weight: 75
     flow:
       - emit:
@@ -55,62 +65,61 @@ scenarios:
           url: "/api/v1/services/?office_id=1"
       - get:
           url: "/api/v1/exam_types/"
+      - think: 5
   
   # Main scenarios for CSRs who login and create/delete an appointment. 
   # Copies same flow from idle CSRs above.
-  - name: "CSR – Create and delete appointments."
+  - name: "CSR – Create and delete appointments"
     beforeRequest: 'setAuthHeader'
     weight: 75
     flow:
       # Copy the same flow for idle CSRs, and just add more steps
       - *csrLoadData
-      - get:
-          url: "/api/v1/exam_types/"
-      - log: "creating draft appointmen running"
       - post:
           url: "/api/v1/appointments/draft"
           json:
             start_time: "2020-11-05T18:00:00Z"
             end_time: "2020-11-05T18:15:00Z"
-            office_id: 7
+            office_id: 1
           capture:
             json: "$.appointment.appointment_id"
             as: "draftappointment_Id"
           strict: false # We don't mind if id can't be captured and the next requests 404s
-      - log: "deleting appointment {{draftappointment_Id}} running"
+      - think: 2
       - delete:
           url: "/api/v1/appointments/draft/{{draftappointment_Id}}/"
-      - log: "post appointments appointment running"
+      - think: 2
       - post:
           # url: "/api/v1/appointments/draft"
           url: "/api/v1/appointments/"
           json:
             start_time: "2020-11-05T18:00:00Z"
             end_time: "2020-11-05T18:15:00Z"
-            service_id: 21
+            service_id: 7
             citizen_name: "name from test"
             contact_information: ""
-            office_id: 7
+            office_id: 1
             appointment_draft_id: 1
           capture:
             json: "$.appointment.appointment_id"
             as: "appointment_id"
           strict: false # We don't mind if id can't be captured and the next requests 404s
-      - log: "updating appointment {{appointment_id}} running"
+      - think: 2
       - put:
           url: "/api/v1/appointments/{{appointment_id}}/"
           json:
             start_time: "2020-11-05T18:00:00Z"
             end_time: "2020-11-05T18:15:00Z"
-            service_id: 21
+            service_id: 7
             citizen_name: "updated name from test"
             contact_information: ""
-            office_id: 7
+            office_id: 1
             appointment_draft_id: 1
           capture:
             json: "$.appointment.appointment_id"
             as: "updateappointment_id"
           strict: false # We don't mind if id can't be captured and the next requests 404s
-      - log: "delet appointment {{updateappointment_id}} running"
+      - think: 2
       - delete:
           url: "/api/v1/appointments/{{appointment_id}}/"
+      - think: 2
