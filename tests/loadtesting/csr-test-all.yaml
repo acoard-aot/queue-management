@@ -1,0 +1,122 @@
+config:
+  # Can toggle below
+  # target: "http://localhost:5000"
+  target: "https://dev-theq.pathfinder.gov.bc.ca"
+  socketio:
+    path: "/api/v1/socket.io"
+    transports: ["websocket"]
+    extraHeaders:
+      Cookie: "oidc-jwt=eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJZUktnVzA0QmJ4QUxpODQ1cy1DdjRURElkMkdZWDc2aHgzM2RIekFCUEZjIn0.eyJleHAiOjE2MDQ5NDY4NzQsImlhdCI6MTYwNDk0NjU3NCwianRpIjoiYWQ4ZjgwMWYtNzFmZS00MGIxLTg5MDAtOGFkNjhmNWEzMWI5IiwiaXNzIjoiaHR0cHM6Ly9kZXYub2lkYy5nb3YuYmMuY2EvYXV0aC9yZWFsbXMvdnRrYXlxNGMiLCJhdWQiOlsiY2Ztcy1kZXYiLCJhY2NvdW50Il0sInN1YiI6IjhhZDY2YzAzLTA0NWQtNDFkZi04NjAxLWFiMmM2OGUyMTc3MyIsInR5cCI6IkJlYXJlciIsImF6cCI6ImNmbXMtZGV2LXN0YWZmIiwic2Vzc2lvbl9zdGF0ZSI6Ijk5MmYxN2ZjLTNkN2MtNDFkNy1hMjYxLTQzNWU5MTYzODYyMiIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly9kZXYtdGhlcS5wYXRoZmluZGVyLmdvdi5iYy5jYS8qIiwibG9jYWxob3N0OjgwODAiLCJodHRwOi8vbG9jYWxob3N0OjUwMDAiLCJodHRwczovL2Rldi10aGVxLmFwcHMuc2lsdmVyLmRldm9wcy5nb3YuYmMuY2EvKiIsIioiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iLCJpbnRlcm5hbF91c2VyIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoiQWRtaW4gQWRtaW4iLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsImdpdmVuX25hbWUiOiJBZG1pbiIsImZhbWlseV9uYW1lIjoiQWRtaW4ifQ.UCzlN9ishkckISUFxNubnzHZBJdF9kKl8jIGM0LIdSqU3YhDBpKglJUZPnhkwpgjzdE7EdfD1Ozk12oprUsXzMfBkjqg3q86nIWUbStSh9ILMtPyiE3GLBHfvXcL-uZvQf95MjxmnLfZO7ArGS0qPG68UJJRjFiQ0YKCuZqYuzC7WrQGjEEI4Y2Gw_aL973_HsJEpk0TiXnSvCG-vZf-LlCdU5JiDPSOuhvf6R4bOt7X8CPGIwViSAWaixY-dPB9KoW_LxjsTAxbPIdhA1kdmT-6fUUOz01tg8AGnZVD0EIOtimAz2Cg0TwA1Co4ZkelysqA_eqHFXq9PMcPW76nhg"
+  http:
+    maxSockets: 3
+
+  phases:
+    - duration: 3
+      arrivalRate: 1
+      name: Warm up
+    # - duration: 30
+    #   arrivalRate: 10
+    #   name: Ramp up load
+  variables:
+  processor: "./functions.js"
+
+scenarios:
+  - name: "CSR - Websockets"
+    beforeRequest: 'setAuthHeader'
+    engine: "socketio"
+
+    weight: 75
+    flow:
+      - log: " socket connectiong starting"
+      - emit:
+          channel: "connect"
+          data: "ping"
+      - think: 1
+      - emit:
+          channel: "joinRoom"
+          data: "joinRoom"
+      - log: "joinRoom socket"
+      - think: 1
+
+  - name: "CSR – Login, load data, idle."
+    beforeRequest: 'setAuthHeader'
+    weight: 75
+    flow:
+      - get:
+          url: "/api/v1/citizens/"
+      - get:
+          url: "/api/v1/appointments/"
+      - get:
+          url: "/api/v1/categories/"
+      - get:
+          url: "/api/v1/channels/"
+      - get:
+          url: "/api/v1/services/?office_id=1"
+      - log: "exam_types running"
+      - get:
+          url: "/api/v1/exam_types/"
+  # - name: "CSR – Create  and delete appointments."
+  #   beforeRequest: 'setAuthHeader'
+  #   weight: 75
+  #   flow:
+  #     - get:
+  #         url: "/api/v1/citizens/"
+  #     - get:
+  #         url: "/api/v1/appointments/"
+  #     - get:
+  #         url: "/api/v1/categories/"
+  #     - get:
+  #         url: "/api/v1/channels/"
+  #     - get:
+  #         url: "/api/v1/services/?office_id=1"
+  #     - log: "exam_types running"
+  #     - get:
+  #         url: "/api/v1/exam_types/"
+  #     - log: "creating draft appointmen running"
+  #     - post:
+  #         url: "/api/v1/appointments/draft"
+  #         json:
+  #           start_time: "2020-11-05T18:00:00Z"
+  #           end_time: "2020-11-05T18:15:00Z"
+  #           office_id: 7
+  #         capture:
+  #           json: "$.appointment.appointment_id"
+  #           as: "draftappointment_Id"
+  #         strict: false # We don't mind if id can't be captured and the next requests 404s
+  #     - log: "deleting appointment {{draftappointment_Id}} running"
+  #     - delete:
+  #         url: "/api/v1/appointments/draft/{{draftappointment_Id}}/"
+  #     - log: "post appointments appointment running"
+  #     - post:
+  #         # url: "/api/v1/appointments/draft"
+  #         url: "/api/v1/appointments/"
+  #         json:
+  #           start_time: "2020-11-05T18:00:00Z"
+  #           end_time: "2020-11-05T18:15:00Z"
+  #           service_id: 21
+  #           citizen_name: "name from test"
+  #           contact_information: ""
+  #           office_id: 7
+  #           appointment_draft_id: 1
+  #         capture:
+  #           json: "$.appointment.appointment_id"
+  #           as: "appointment_id"
+  #         strict: false # We don't mind if id can't be captured and the next requests 404s
+  #     - log: "updating appointment {{appointment_id}} running"
+  #     - put:
+  #         url: "/api/v1/appointments/{{appointment_id}}/"
+  #         json:
+  #           start_time: "2020-11-05T18:00:00Z"
+  #           end_time: "2020-11-05T18:15:00Z"
+  #           service_id: 21
+  #           citizen_name: "updated name from test"
+  #           contact_information: ""
+  #           office_id: 7
+  #           appointment_draft_id: 1
+  #         capture:
+  #           json: "$.appointment.appointment_id"
+  #           as: "updateappointment_id"
+  #         strict: false # We don't mind if id can't be captured and the next requests 404s
+  #     - log: "delet appointment {{updateappointment_id}} running"
+  #     - delete:
+  #         url: "/api/v1/appointments/{{appointment_id}}/"
