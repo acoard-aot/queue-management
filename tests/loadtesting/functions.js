@@ -58,10 +58,12 @@ async function setAuthHeader(requestParams, context, ee, next) {
 (async () => {
     // Only execute if script is called directly, not if imported.
     if (require.main === module){
-        console.log('SHOULD NOT SEE THIS WHEN RUNNING TESTS');
-        console.log('SHOULD see this when running functions directly')
+        // console.log('SHOULD NOT SEE THIS WHEN RUNNING TESTS');
+        // console.log('SHOULD see this when running functions directly')
         const {access_token} = await loginToKeycloak('admin', 'admin');
-        console.log('\n\getAccessToken Result:\n\n', access_token)
+        // console.log('\n\getAccessToken Result:\n\n', access_token)
+        console.log( access_token)
+        return access_token;
     }
 })();
 

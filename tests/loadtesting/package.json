@@ -9,8 +9,11 @@
     "tests:socket": "npx artillery run csr-socket-load-test.yaml",
     "tests:all": "npx artillery run csr-test-all.yaml",
     "tests:http": "npx artillery run csr-http-load-test-appointments.yaml",
-    "profile:python": "sudo ./profile-python.sh --command=record || exit 0",
-    "top:python": "sudo ./profile-python.sh --command=top || exit 0"
+    "python:profile": "sudo ./profile-python.sh --command=record || exit 0",
+    "python:top": "sudo ./profile-python.sh --command=top || exit 0",
+
+    "csr-tests": "npx artillery  run --output report.json -k csr-test-all.yaml",
+    "test:all": "source envs.sh"
   },
   "repository": {
     "type": "git",
@@ -18,6 +21,9 @@
   },
   "author": "Adam Coard",
   "homepage": "https://github.com/bcgov/queue-management#readme",
+  "contributors": [
+    "Faiz Shabeeb <faiz.shabeeb@aot-technologies.com> (https://github.com/shabeeb-aot)"
+  ],
   "dependencies": {},
   "devDependencies": {
     "artillery": "^1.6.1",
