@@ -9,7 +9,8 @@
     "tests:socket": "npx artillery run csr-socket-load-test.yaml",
     "tests:all": "npx artillery run csr-test-all.yaml",
     "tests:http": "npx artillery run csr-http-load-test-appointments.yaml",
-    "profile:python": "sudo ./profile-python.sh  || exit 0"
+    "profile:python": "sudo ./profile-python.sh --command=record || exit 0",
+    "top:python": "sudo ./profile-python.sh --command=top || exit 0"
   },
   "repository": {
     "type": "git",

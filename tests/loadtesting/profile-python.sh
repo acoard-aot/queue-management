@@ -17,4 +17,22 @@ if [ -z "$MAIN_PROCESS" ]; then
       exit 1
 fi
 
-py-spy record -o output/profile-${MAIN_PROCESS}.svg --subprocesses --pid ${MAIN_PROCESS}
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --command=*)
+      command="${1#*=}"
+      ;;
+    *)
+      echo "Invalid args: $@"
+      exit 1
+  esac
+  shift
+done
+
+if [[ "$command" == "record" ]]; then
+    py-spy record -o output/profile-${MAIN_PROCESS}.svg --subprocesses --pid ${MAIN_PROCESS}
+elif [[ "$command" == "top" ]]; then
+    py-spy top --subprocesses --pid ${MAIN_PROCESS}
+else
+    echo "Invalid --command argument.  You provided: $command"
+fi
