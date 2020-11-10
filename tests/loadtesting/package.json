@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "node functions.js",
     "tests": "npx artillery run csr-http-load-test-appointments.yaml",
-    "tests-socket": "npx artillery run csr-socket-load-test.yaml"
+    "tests:socket": "npx artillery run csr-socket-load-test.yaml",
+    "tests:all": "npx artillery run csr-test-all.yaml",
+    "tests:http": "npx artillery run csr-http-load-test-appointments.yaml",
+    "profile:python": "sudo ./profile-python.sh  || exit 0"
   },
   "repository": {
     "type": "git",
