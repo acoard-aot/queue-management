@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "node functions.js",
     "tests": "npx artillery run csr-http-load-test-appointments.yaml",
-    "tests-socket": "npx artillery run csr-socket-load-test.yaml"
+    "tests-socket": "npx artillery run csr-socket-load-test.yaml",
+    "csr-tests": "npx artillery  run --output report.json -k csr-test-all.yaml",
+    "test:all": "source envs.sh"
   },
   "repository": {
     "type": "git",
@@ -14,6 +16,9 @@
   },
   "author": "Adam Coard",
   "homepage": "https://github.com/bcgov/queue-management#readme",
+  "contributors": [
+    "Faiz Shabeeb <faiz.shabeeb@aot-technologies.com> (https://github.com/shabeeb-aot)"
+  ],
   "dependencies": {},
   "devDependencies": {
     "artillery": "^1.6.1",
