@@ -5,15 +5,13 @@
   "main": "index.js",
   "scripts": {
     "dev": "node functions.js",
+    "get-keycloak-token": "node functions.js --get-keycloak-token",
     "tests": "npx artillery run csr-http-load-test-appointments.yaml",
-    "tests:socket": "npx artillery run csr-socket-load-test.yaml",
-    "tests:all": "npx artillery run csr-test-all.yaml",
-    "tests:http": "npx artillery run csr-http-load-test-appointments.yaml",
+    "tests:all": "source envs.sh && npx artillery  run --output output/report.json -k csr-test-all.yaml",
+    "tests:http": "source envs.sh && npx artillery  run --output output/report-http.json -k csr-http.yaml",
+    "tests:socket": "source envs.sh && npx artillery  run --output output/report-socket.json -k csr-socket.yaml",
     "python:profile": "sudo ./profile-python.sh --command=record || exit 0",
-    "python:top": "sudo ./profile-python.sh --command=top || exit 0",
-
-    "csr-tests": "npx artillery  run --output report.json -k csr-test-all.yaml",
-    "test:all": "source envs.sh"
+    "python:top": "sudo ./profile-python.sh --command=top || exit 0"
   },
   "repository": {
     "type": "git",

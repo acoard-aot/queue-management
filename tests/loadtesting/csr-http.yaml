@@ -1,18 +1,20 @@
 config:
-  # Can toggle below
-  target: "http://localhost:5000"
-  # target: "https://dev-theq.pathfinder.gov.bc.ca"
+  target: "{{ $processEnvironment.TARGET }}"
   http:
     maxSockets: 3
-
-
   phases:
-    # - duration: 3
-    #   arrivalRate: 1
-    #   name: Warm up
-    - duration: 3
-      arrivalRate: 1
-      name: Ramp up load
+     - name: Warm up
+       duration: 3
+       arrivalRate: 1
+     - name: Ramp up load (max {{ $processEnvironment.MAX_VIRTUAL_USERS }} users)
+       duration: 30
+       arrivalRate: 10
+       rampTo: 50
+       maxVusers: {{ $processEnvironment.MAX_VIRTUAL_USERS }}
+     - name: Sustained max load. (max {{ $processEnvironment.MAX_VIRTUAL_USERS }} users)
+       duration: 60
+       arrivalRate: 50
+       maxVusers: {{ $processEnvironment.MAX_VIRTUAL_USERS }}
   variables:
   processor: "./functions.js"
 
@@ -82,15 +84,3 @@ scenarios:
       - log: "delet appointment {{updateappointment_id}} running"
       - delete:
           url: "/api/v1/appointments/{{appointment_id}}/"
-
-      #     capture:
-      #       json: "$.appointmentid"
-      #       as: "appointment"
-      #     strict: false # We don't mind if id can't be captured and the next requests 404s
-      # - log: "delet  draft appointment {{appointment}} running"
-      # - delete:
-      #   url: "/api/v1/appointments/draft/{{appointment}}"
-
-
-# TODO - Add SocketIO tests --  
-# engine: "socketio"

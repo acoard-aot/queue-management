@@ -10,22 +10,53 @@ npm install
 
 # Make bash scripts executable
 chmod +x profile-python.sh
-chmod +x TODO-FAIZS-SCRIPT.sh TODO TODO TODO TODO TODO TODO TODO 
+
+cp envs.example.sh envs.sh
+chmod +x envs.sh
+
+
+# py-spy is only necessary if are profiling python
+# if you are JUST doing load testing (`npm run tests:*`), you can skip this.
+pip install py-spy
 ```
 
+
+## Testing in OpenShift
+
+adam todo - put this into a script?
+
+RSH into API pod:
+
+```bash
+pip install py-spy
+MAIN_PROCESS=$(pgrep -f gunicorn |  head -n 1)
+```
 
 ## Usage
 
 We have created a number of npm scripts in `package.json` that expose the functionality we worked on.  For example, `npm run tests:all` runs all loadtesting - websocket and HTTP.  There is also `tests:http` and `tests:socket`.
 
 
+### Load Testing
+
+To run all load tests
+
+  npm run tests:all
 
 
 ### Python Profiling
 
-  npm run profile:python
+```bash
+# Main profile command, generates flame graph report, useful for analyzing performance
+npm run python:profile
 
-Run this command on the same machine that already has the API running.  It will ask for `sudo` password. It will scan for the parent gunicorn process by name and profile it.  Let this command run for the durattion of the profiling.  Typically, you start profiling, then run load testing, then exit profiling.
+# Creates interactive terminal UI similar to "top", useful for local development.
+npm run python:top
+```
+
+All Python commands must be run on the same machine that already has the API running.  Additionally, they cannot be run in OpenShift itself due to security constraints [(see more)](#python-profiling-on-openshift)
+
+These commands must be run on the same machine that already has the API running. It will ask for `sudo` password. It will scan for the parent gunicorn process by name and profile it.  Let this command run for the durattion of the profiling.  Typically, you start profiling, then run load testing, then exit profiling.
 
 **Why sudo?** *The profiler we use, `pyspy` can profile already running Python processes.  This is great for profiling  real world performance, but sudo is required in order to spy on another process. This is Linux security to stop a non-sudo process from inspecting/modifying other processes which should not be allowed.*
 
@@ -39,6 +70,27 @@ Typically, to combine profiling with load testing, you would...
 
 This command outputs a `profile-12345.svg` file, with the # being the pid of the parent python process running gunicorn. The file is a [flamegraph](http://www.brendangregg.com/flamegraphs.html), an interactive graph that shows what processes took the most time.
 
+#### Python Profiling on OpenShift
+
+Summary - we cannot run this profiling on OpenShift due to BCGov specific security configurations.
+
+In order to profile another process on OpenShift, we need to make the below change and add `SYS_PTRACE`. 
+
+```yaml
+securityContext:
+  capabilities:
+    add:
+    - SYS_PTRACE
+```
+
+Unfortunately, the OpenShift 4 environment does not allow us to do this.  This is likely by design security options that have been enabled by the BC DevOps platform.  We could ask for an exception and see if they're willing.  Below is the error we get: `pods "queue-management-api-21-fc82h" is forbidden: unable to validate against any security context constraint: [capabilities.add: Invalid value: "SYS_PTRACE": capability may not be added]`
+
+Even without OpenShift, this Python profiling is still valuable to run on locally.  While a developer's machine won't be as powerful as OpenShift, the underlying relationships between what takes time on Python will hold the same.   A developer could thus profile locally to identify and fix performance issues.  Put simply, even if their local  laptop is 20% weaker across the board, profiling will still let the developer find what's slow and fix it.
+
+
+* https://github.com/benfred/py-spy#how-do-i-run-py-spy-in-docker
+* https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-capabilities-for-a-container
+* https://docs.openshift.com/container-platform/4.4/authentication/managing-security-context-constraints.html
 
 ### Example Load Testing Report
 

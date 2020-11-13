@@ -1,18 +1,11 @@
 config:
-  # Can toggle below
-  # target: "http://localhost:5000"
-  target: "https://dev-theq.pathfinder.gov.bc.ca"
-  
-  # changing to test requires updating function.js as it gets keycloak token.
-  # target: https://test-theq.apps.silver.devops.gov.bc.ca
-  # target: "https://test-theq.pathfinder.gov.bc.ca"
+  target: "{{ $processEnvironment.TARGET }}"
   
   socketio:
     path: "/api/v1/socket.io"
     transports: ["websocket"]
     extraHeaders:
       Cookie: "oidc-jwt={{ $processEnvironment.SERVICE_API_KEY }}"
-      # Cookie: "oidc-jwt={{ $processEnvironemnt.JWT }}"
   http:
     maxSockets: 3
 
@@ -20,15 +13,15 @@ config:
     - name: Warm up
       duration: 3
       arrivalRate: 1
-    - name: Ramp up load (max 200 users)
+    - name: Ramp up load (max {{ $processEnvironment.MAX_VIRTUAL_USERS }} users)
       duration: 30
       arrivalRate: 10
       rampTo: 50
-      maxVusers: 200
-    - name: Sustained max load. (max 200 users)
+      maxVusers: {{ $processEnvironment.MAX_VIRTUAL_USERS }}
+    - name: Sustained max load. (max {{ $processEnvironment.MAX_VIRTUAL_USERS }} users)
       duration: 60
       arrivalRate: 50
-      maxVusers: 200   
+      maxVusers: {{ $processEnvironment.MAX_VIRTUAL_USERS }}   
   processor: "./functions.js"
 
 scenarios:
