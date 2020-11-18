@@ -14,6 +14,7 @@
   - [FAQ / Troubleshooting](#faq--troubleshooting)
     - [Verify IDs are correct](#verify-ids-are-correct)
     - [Verify the "admin" user is assigned to correct office](#verify-the-admin-user-is-assigned-to-correct-office)
+    - [I get errors when testing locally, but not when testing OpenShift dev](#i-get-errors-when-testing-locally-but-not-when-testing-openshift-dev)
 
 ## Installation
 
@@ -279,3 +280,10 @@ The first thing to check when trouble shooting is that the IDs in `csr-test-all.
 The admin user must be assigned to the same office that the tests try to use.
 
 For example, if you set `office_id` to 1, then admin must be assigned to Test Office (assuming 1 = Test Office).
+
+
+### I get errors when testing locally, but not when testing OpenShift dev
+
+This is normal.  You run into performance limits quicker on a weaker local machine.
+
+OpenShift dev can support 200 concurrent users, but my laptop can support far less than that.
