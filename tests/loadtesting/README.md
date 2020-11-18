@@ -1,5 +1,17 @@
 # Load testing
 
+- [Load testing](#load-testing)
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [Configuration](#configuration)
+    - [Running Load Tests](#running-load-tests)
+    - [Python Profiling](#python-profiling)
+      - [Python Profiling on OpenShift](#python-profiling-on-openshift)
+    - [Example Load Testing Report](#example-load-testing-report)
+      - [Understanding a Load Testing Report](#understanding-a-load-testing-report)
+  - [Report + Recommendations](#report--recommendations)
+  - [Resources](#resources)
+
 ## Installation
 
 ```bash
@@ -10,39 +22,34 @@ npm install
 
 # Make bash scripts executable
 chmod +x profile-python.sh
-
 cp envs.example.sh envs.sh
 chmod +x envs.sh
 
-
-# py-spy is only necessary if are profiling python
+# py-spy is only necessary if are profiling python (`npm run python:*`)
 # if you are JUST doing load testing (`npm run tests:*`), you can skip this.
 pip install py-spy
-```
-
-
-## Testing in OpenShift
-
-adam todo - put this into a script?
-
-RSH into API pod:
-
-```bash
-pip install py-spy
-MAIN_PROCESS=$(pgrep -f gunicorn |  head -n 1)
 ```
 
 ## Usage
 
 We have created a number of npm scripts in `package.json` that expose the functionality we worked on.  For example, `npm run tests:all` runs all loadtesting - websocket and HTTP.  There is also `tests:http` and `tests:socket`.
 
+### Configuration
 
-### Load Testing
+Configuration of varables is done in `envs.sh`.  The main variables that will be used are
 
-To run all load tests
+* `MAX_VIRTUAL_USERS` - determines the maximum amount of concurrent virtual users that are accessing the system at once
+* `TARGET` - the endpoint being load tested.  This is configured to use the dev OIDC keycloak, so it can freely be changed between localhost and OpenShift dev.
+
+
+### Running Load Tests
+
+To run all load tests:
 
   npm run tests:all
 
+
+You can see a [Example Load Testing Report](#example-load-testing-report) below, where we also discuss how to read and understand a load testing report.
 
 ### Python Profiling
 
@@ -54,21 +61,26 @@ npm run python:profile
 npm run python:top
 ```
 
+Python profiling allows us to get an in-depth look at where the Python API process is spending it's time. We have written some scripts that will automatically find the running gunicorn process and profile it, including subprocesses, and then create a flamegraph report.
+
 All Python commands must be run on the same machine that already has the API running.  Additionally, they cannot be run in OpenShift itself due to security constraints [(see more)](#python-profiling-on-openshift)
 
-These commands must be run on the same machine that already has the API running. It will ask for `sudo` password. It will scan for the parent gunicorn process by name and profile it.  Let this command run for the durattion of the profiling.  Typically, you start profiling, then run load testing, then exit profiling.
+These commands must be run on the same machine that already has the API running. It will ask for `sudo` password. It will scan for the parent gunicorn process by name and profile it.  Let this command run for the durattion of the profiling.  Typically, you start profiling, then run load testing, then exit profiling.  
 
 **Why sudo?** *The profiler we use, `pyspy` can profile already running Python processes.  This is great for profiling  real world performance, but sudo is required in order to spy on another process. This is Linux security to stop a non-sudo process from inspecting/modifying other processes which should not be allowed.*
 
-Press "CTRL+C" to exit profiling.  Only press it once.  It will then write the report as a svg file.  If you press it twice quickly you can cancel out of it creating the report.
+In the same terminal that you started `npm run python:profile`, press "CTRL+C" to exit profiling.  Only press it once.  It will then write the report as a svg file.  (If you press it twice quickly you can cancel out of it creating the report.)
 
-Typically, to combine profiling with load testing, you would...
+So, to put the whole process together, typically to combine profiling with load testing, you would...
 
-  1. Run `npm run profile:python` on server machine.
-  2. On separate load-testing machine (e.g. dev laptop), `npm run tests:all`
-  3. After #2 is complete, end profiliing (Select terminal for #1 then CTRL+C to stop).
+  1. Start the API like normal
+  2. In a new terminal, run `npm run profile:python`
+  3. In a new terminal, start loadtesting with `npm run tests:all`
+  4. After #3 is complete, you can then end profling (select terminal for #2 and press CTRL+C)
 
-This command outputs a `profile-12345.svg` file, with the # being the pid of the parent python process running gunicorn. The file is a [flamegraph](http://www.brendangregg.com/flamegraphs.html), an interactive graph that shows what processes took the most time.
+This command outputs a `profile-12345.svg` file, with `12345` being the pid of the parent python process running gunicorn. The file is a [flamegraph](http://www.brendangregg.com/flamegraphs.html), an interactive graph that shows what processes took the most time.
+
+We have included an example report, called `profile-demo-withloadtesting.svg`
 
 #### Python Profiling on OpenShift
 
@@ -93,6 +105,8 @@ Even without OpenShift, this Python profiling is still valuable to run on locall
 * https://docs.openshift.com/container-platform/4.4/authentication/managing-security-context-constraints.html
 
 ### Example Load Testing Report
+
+These are the results from running `npm run tests:all`
 
 After running load tests, you'll see a report (example provided):
 
@@ -119,10 +133,9 @@ After running load tests, you'll see a report (example provided):
         204: 425
         504: 1
 
-Some notes:
+#### Understanding a Load Testing Report
 
 Scenarios launched is 619, which means it simulated 619 CSRs load. We ensure that the maximum concurrent users never surpasses `maxVusers` (in .yaml).   So, there are never more than 200 users _at once_, but as those users complete their load-testing tasks they are replaced with more virtual users (419 more, to be exact).
-
 
 The results are mostly under "Codes".   The `0: 412` line means 412 websocket connections were made.  We can also see that for all but 1 request, we got status codes in the 200s (success).
 
@@ -211,8 +224,25 @@ Running with 400 conurrent users caused many more errors:
 
 
 
+## Report + Recommendations
 
+* Load balancing on OpenShift pods doesn't seem to be working.
+* Auth taking up 42.25% of all requests. Only ~12% of CPU spent on business logic.
+* Send emails on separate pod
 
+**Load Balancing not working** - it appears that load balancing between API pods is not working. Generally speaking (depending on load balancing config), when a new request comes in it should be distributed equally between all available pods.  This is not happening.  Instead, even though we have 2 API pods, all of the traffic is going to 1 pod.  This is a huge problem, as it means none of the horizontal scaling on OpenShift is working. There may be some technical hurdles, for example, there have been discussions before that perhaps load balancing would split the websocket sessions. 
+
+**Recommendation Enable load balancing so that load is distributed equally among pods:** i.e. `roundrobin` [load balancing strategy - OpenShift docs link](https://docs.openshift.com/container-platform/3.5/architecture/core_concepts/routes.html#load-balancing).  
+
+**Authentication taking up 42.25% of CPU on every request** - If we look at the flamegraph, for example, `profile-demo-withloadtesting.svg`, we can see that 36.75% of the CPU was spent on just parsing the OIDC token from Keycloak, and another 5.5% was spent in our `auth_util`.  Only 12% was for actual busienss logic. Another ~10% for JSON encoding, and the remaining ~35% for threading, eventlet, and gunicorn. 
+
+**Recommendation: Refactor the `has_any_role`** function in `auth_util.py`, as it is in the hot path for basically every single request. Profile changes before and after to measure impact. While it's only 5% of CPU, it's 5% of CPU for _every request_, so any improvements here will benefit across the board.
+
+**Recommendation: Investigate if there are gains to be made with Keycloak OIDC token parsing.**  We are currently using the [`flask_oidc` third party package.](https://flask-oidc.readthedocs.io/en/latest/).  If there are any gains to be made here, such as a new package, or writing it in house, they are worth looking into.  OIDC parsing takes 42% of every request, and is much higher impact than the `has_any_role` recommendation above.  One possibility would be to re-rewrite token parsing in another language faster than Python (e.g. C++ or Rust), and have Python call it via a foreign function interface.  The [Python CFFI](https://cffi.readthedocs.io/en/latest/overview.html) does exactly this.  One of Python's main strengths is it's fantastic foreign function interface, so that when a performance critical hot path is detected it can be re-written in another faster language.  This comes with operational overhead but is worth investigating.
+
+**Recommendation: Send emails in a separate pod.** Sending emails is one of the most CPU intensive tasks that the API pod is responsible for.  When a pod has to bulk send emails (e.g. after creating a blackout), this can result in CPU spikes which cause other requests to timeout. We recommend spinning up a queue and a separate pod responsible for sending emails.  Instead of the main API pod sending emails, it would instead add a record to the queue indicating the email hadn't been sent.  The new email-pod would be programmed to always listen to the pod, and when emails come in it would send them and then update their status in the queue to sent.  Another benefit of this approach is it's more resiliant.  If a pod crashes when halfway through sending emails, the queue will still have the correct list of what needs to be sent.  In the current system if a pod crashes while sending emails, those emails are lost. Relatedly, having load-balancing working should ameliorate this issue of CPU load from emails.  So, we recommend you investigate load balancing first as it may improve it enough to not be an issue.
+
+[OpenShift 4 also has specific patterns to deal with this, called Jobs.](https://docs.openshift.com/container-platform/4.1/nodes/jobs/nodes-nodes-jobs.html)  A queue would still be necessary, but then one could configure an "email job" to only spawn when there are emails to send.  This would reduce overall resources spent and increase resiliancy if things go down.
 
 ## Resources
 
