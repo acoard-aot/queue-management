@@ -15,6 +15,7 @@ export MAX_VIRTUAL_USERS=200
 # Load-testing logs into keycloak via `admin:admin`.
 # Implementation details, including Keycloak URI, are in `function.js`
 export TARGET="http://localhost:5000"
+# export TARGET="https://dev-theq.pathfinder.gov.bc.ca"
 export KEYCLOAK_USERNAME='admin'
 export KEYCLOAK_PASSWORD='admin'
 

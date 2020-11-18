@@ -11,6 +11,9 @@
       - [Understanding a Load Testing Report](#understanding-a-load-testing-report)
   - [Report + Recommendations](#report--recommendations)
   - [Resources](#resources)
+  - [FAQ / Troubleshooting](#faq--troubleshooting)
+    - [Verify IDs are correct](#verify-ids-are-correct)
+    - [Verify the "admin" user is assigned to correct office](#verify-the-admin-user-is-assigned-to-correct-office)
 
 ## Installation
 
@@ -33,6 +36,22 @@ pip install py-spy
 ## Usage
 
 We have created a number of npm scripts in `package.json` that expose the functionality we worked on.  For example, `npm run tests:all` runs all loadtesting - websocket and HTTP.  There is also `tests:http` and `tests:socket`.
+
+
+Quick reference:
+
+```bash
+# just runs load testing - no python profiling
+npm run tests:all 
+
+# run both load testing and python profiling:
+npm run python:profile # in one terminal, start profiling
+npm run tests:all # in separate terminal, run load tests
+# after load testing is complete, press CTR+C in the python:profile terminal
+```
+
+More details can be found [in python profiling](#python-profiling)
+
 
 ### Configuration
 
@@ -74,7 +93,7 @@ In the same terminal that you started `npm run python:profile`, press "CTRL+C" t
 So, to put the whole process together, typically to combine profiling with load testing, you would...
 
   1. Start the API like normal
-  2. In a new terminal, run `npm run profile:python`
+  2. In a new terminal, run `npm run python:profile`
   3. In a new terminal, start loadtesting with `npm run tests:all`
   4. After #3 is complete, you can then end profling (select terminal for #2 and press CTRL+C)
 
@@ -249,3 +268,14 @@ Running with 400 conurrent users caused many more errors:
 * PySpy https://github.com/benfred/py-spy
 
 
+## FAQ / Troubleshooting
+
+### Verify IDs are correct
+
+The first thing to check when trouble shooting is that the IDs in `csr-test-all.yaml` are correct.  For example, `service_id` and `office_id` we have hardcoded to 7 and 1 respectively.
+
+### Verify the "admin" user is assigned to correct office
+
+The admin user must be assigned to the same office that the tests try to use.
+
+For example, if you set `office_id` to 1, then admin must be assigned to Test Office (assuming 1 = Test Office).
