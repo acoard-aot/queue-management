@@ -4,16 +4,6 @@ const fetch = require('node-fetch');
 KEYCLOAK_URI = 'https://dev.oidc.gov.bc.ca/auth'
 KEYCLOAK_CLIENT = 'cfms-dev-staff'
 
-// {
-//     "realm": "vtkayq4c",
-//     "auth-server-url": "https://dev.oidc.gov.bc.ca/auth/",
-//     "ssl-required": "external",
-//     "resource": "cfms-dev-staff",
-//     "public-client": true,
-//     "confidential-port": 0
-//   }
-
-
 // This implementation assumes it never has to refresh a token and they never expire
 // As most load testing is short lived (minutes, not hours) this works fine.
 // Cache auth tokens to a plain old JavaScript object
