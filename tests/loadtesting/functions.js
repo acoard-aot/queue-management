@@ -46,7 +46,7 @@ async function loginToKeycloak(username, password) {
 }
 
 async function setAuthHeader(requestParams, context, ee, next) {
-    const {access_token} = await getAuthToken('admin', 'admin')
+    const {access_token} = await getAuthToken(process.env.KEYCLOAK_USERNAME, process.env.KEYCLOAK_PASSWORD)
     // HTTP requests use Authorization
     requestParams.headers.Authorization = `Bearer ${access_token}`
     // Websocket requests use oidc-jwt cookie
@@ -59,8 +59,9 @@ async function setAuthHeader(requestParams, context, ee, next) {
     // Only execute if script is called directly, not if imported.
     if (require.main === module){
         if (process.argv.includes('--get-keycloak-token')){
-            const {access_token} = await loginToKeycloak('admin', 'admin');
+            const {access_token} = await loginToKeycloak(process.env.KEYCLOAK_USERNAME, process.env.KEYCLOAK_PASSWORD);
             // Log access token to STDOUT, so it can be used as environment variable.
+
             console.log( access_token )
             return access_token;
         }
