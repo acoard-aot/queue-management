@@ -61,27 +61,3 @@ async function setAuthHeader(requestParams, context, ee, next) {
 module.exports = {
     setAuthHeader
 }
-
-
-// Scrap - Old Fns, may be useful in future
-
-async function getAccessTokenFromRefresh(refreshToken) {
-    const res = await fetch(`${KEYCLOAK_URI}/realms/vtkayq4c/protocol/openid-connect/token`, {
-        "headers": {
-            "accept": "*/*",
-            "accept-language": "en-US,en;q=0.9",
-            "content-type": "application/x-www-form-urlencoded",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-site"
-        },
-        "body": "grant_type=refresh_token&refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJlNGQwY2YzNS1jYTVkLTQxM2YtYjY2ZC01NzI3YmE2OTdlMmEifQ.eyJleHAiOjE2MDMxMzg5MTcsImlhdCI6MTYwMzEzNzExNywianRpIjoiZDNjMmVmZjktY2FjYy00YjE5LWE1MzEtNWM3ODBkYTIzMWFhIiwiaXNzIjoiaHR0cHM6Ly9kZXYub2lkYy5nb3YuYmMuY2EvYXV0aC9yZWFsbXMvdnRrYXlxNGMiLCJhdWQiOiJodHRwczovL2Rldi5vaWRjLmdvdi5iYy5jYS9hdXRoL3JlYWxtcy92dGtheXE0YyIsInN1YiI6IjhhZDY2YzAzLTA0NWQtNDFkZi04NjAxLWFiMmM2OGUyMTc3MyIsInR5cCI6IlJlZnJlc2giLCJhenAiOiJjZm1zLWRldi1zdGFmZiIsIm5vbmNlIjoiNjA4ODAxMTUtMDI0NC00NzZmLTg5N2MtNzQ4MjJhNjA4OTI0Iiwic2Vzc2lvbl9zdGF0ZSI6ImI5MjdhMDY2LTY4OGItNDlmMi1hNmFkLTJlM2U4YjgxYjQ5OCIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwifQ.-VKmIZB_rDDk5IIZzEzINxj2jEaf8S4L7_JAo40ZjJI&client_id=cfms-dev-staff",
-        "body": `grant_type=refresh_token&refresh_token=${refreshToken}&client_id=cfms-dev-staff`,
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-    })
-    const body = await res.json();
-    // console.log('getAccessToken body', {res, body})
-    return body
-}
