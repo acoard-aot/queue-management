@@ -271,8 +271,8 @@ export default class Appointments extends Vue {
       this.listView = true
     } else {
       this.listView = false
-      this.calendarSetup()
     }
+    this.calendarSetup()
   }
 
   selectEvent (event) {
@@ -378,8 +378,17 @@ export default class Appointments extends Vue {
   // }
 
   calendarSetup () {
-    const title = 'Appointments:'
+    let title = 'Appointments:'
     const name = this.type
+    if (!this.$refs.calendar) {
+      this.$nextTick(() => {
+        title = 'Appointments: Filters  '
+        this.setCalendarSetup({ title, name, titleRef: this.$refs.calendar })
+      })
+    } else {
+      title = 'Appointments:'
+    }
+
     this.setCalendarSetup({ title, name, titleRef: this.$refs.calendar })
   }
 
