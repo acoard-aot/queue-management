@@ -378,17 +378,13 @@ export default class Appointments extends Vue {
   // }
 
   calendarSetup () {
-    let title = 'Appointments:'
+    const title = 'Appointments:'
     const name = this.type
     if (!this.$refs.calendar) {
       this.$nextTick(() => {
-        title = 'Appointments: Filters  '
         this.setCalendarSetup({ title, name, titleRef: this.$refs.calendar })
       })
-    } else {
-      title = 'Appointments:'
     }
-
     this.setCalendarSetup({ title, name, titleRef: this.$refs.calendar })
   }
 

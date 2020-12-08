@@ -232,17 +232,11 @@ export default class Calendar extends Vue {
 
   type: any = 'category'
   categoryDays: number = categoryDefaultDays
-  // types: any = ['month', 'week', 'day', '4day']
+
   mode: any = 'stack'
-  // modes: any = ['stack', 'column']
+
   weekday: any = [1, 2, 3, 4, 5]
   start: any = moment().format('YYYY-MM-DD')
-  // weekdays: any = [
-  //   { text: 'Sun - Sat', value: [0, 1, 2, 3, 4, 5, 6] },
-  //   { text: 'Mon - Sun', value: [1, 2, 3, 4, 5, 6, 0] },
-  //   { text: 'Mon - Fri', value: [1, 2, 3, 4, 5] },
-  //   { text: 'Mon, Wed, Fri', value: [1, 3, 5] }
-  // ]
 
   value: any = ''
   eventsList: any = []
