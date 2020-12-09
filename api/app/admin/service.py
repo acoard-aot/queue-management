@@ -14,7 +14,6 @@ limitations under the License.'''
 
 from app.models.theq import Service
 from .base import Base
-from wtforms import TextAreaField
 from flask_login import current_user
 from qsystem import db
 
@@ -50,8 +49,7 @@ class ServiceConfig(Base):
         'display_dashboard_ind': 'Display Add Citizen/Back Office',
         'actual_service_ind': 'Category or Service',
         'timeslot_duration': 'Service Duration',
-        'is_dlkt': 'This service uses a DLKT',
-        'email_paragraph': 'Service Email Paragraph'
+        'is_dlkt': 'This service uses a DLKT'
     }
     column_searchable_list = ('service_code','service_name',)
     column_sortable_list = [
@@ -83,9 +81,7 @@ class ServiceConfig(Base):
         'online_link',
         'online_availability',
         'timeslot_duration',
-        'is_dlkt',
-        'email_paragraph',
-        'css_colour'
+        'is_dlkt'
     )
     form_choices = {
         'actual_service_ind': [
@@ -95,14 +91,6 @@ class ServiceConfig(Base):
             ("0", 'No, do not display in the Add Citizen service list'),\
             ("1", 'Yes, display in the Add Citizen service list')
         ]
-    }
-
-    form_widget_args = {
-        'email_paragraph': { 'rows': 5, 'maxlength': 2000  }
-    }
-
-    form_overrides = {
-        'email_paragraph': TextAreaField
     }
 
 ServiceModelView = ServiceConfig(Service, db.session)

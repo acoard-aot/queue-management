@@ -30,11 +30,6 @@
             font-family: Verdana, Arial, sans-serif;
             font-size: 16px;
         }
-
-        span.paragraph-intro {
-            font-style: itailc;
-            text-decoration: underline;
-        }
     </style>
     <meta name="referrer" content="origin-when-cross-origin"/>
     <link rel="icon" sizes="16x16" type="image/png" href="assets/favicon_16.png"/>
@@ -60,33 +55,18 @@
                 <tr>
                     <td>
                         <p class="text-content">
-                            Hello {{ display_name }},
+                            Hello {{ display_name }}
                         </p>
-                        {% if service_name is not none %}
                         <p class="text-content">
-                            Service: {{ service_name }}
+                            You have an appointment with Service BC {{ location }} on {{ formatted_date }} for a total of {{ duration }} minutes.
                         </p>
-                        {% endif %}
                         <p class="text-content">
-                            REMINDER: You have an appointment with Service BC {{ location }} on {{ formatted_date }} for a total of {{ duration }} minutes. We're looking forward to seeing you.
+                            Here are a few reminders:
+                            <ul>
+                                <li>Plan to arrive 5 minutes early</li>
+                                <li>Please bring all relevant documents and identification</li>
+                            </ul>
                         </p>
-
-
-                        {% if office_email_paragraph is not none %}
-                        <p class="text-content">
-                            {{ office_email_paragraph|safe }}
-                        </p>
-                        {% if service_email_paragraph is not none %}
-                        <p class="text-content">
-                            {{ service_email_paragraph|safe }}
-                        </p>
-                        {% endif %}
-
-                        <p class="text-content">
-                            If you have any further questions, please call us at {{ telephone }}
-                        </p>
-
-   
                         <p class="text-content">
                             To change or cancel your appointment, please visit Service BC Book an Appointment and sign in.
                         </p>
@@ -99,7 +79,6 @@
                         <p class="text-content">
                             Thank you, <br/> <br/>
                             Service BC {{ location }} <br/>
-                            {{ civic_address }} <br/>
                             {{ telephone }} <br/>
                         </p>
                     </td>

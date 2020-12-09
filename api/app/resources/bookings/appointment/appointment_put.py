@@ -26,7 +26,7 @@ from app.utilities.email import send_email, get_confirmation_email_contents, gen
 from pprint import pprint
 from app.services import AvailabilityService
 from dateutil.parser import parse
-from qsystem import socketio, application
+from qsystem import socketio
 
 
 @api.route("/appointments/<int:id>/", methods=["PUT"])
@@ -49,8 +49,7 @@ class AppointmentPut(Resource):
         if json_data.get('appointment_draft_id'):
             draft_id_to_delete = int(json_data['appointment_draft_id'])
             Appointment.delete_draft([draft_id_to_delete])
-            if not application.config['DISABLE_AUTO_REFRESH']:
-                socketio.emit('appointment_delete', draft_id_to_delete)
+            socketio.emit('appointment_delete', draft_id_to_delete)
 
         if is_public_user_appt:
             office_id = json_data.get('office_id')
@@ -119,8 +118,7 @@ class AppointmentPut(Resource):
 
         result = self.appointment_schema.dump(appointment)
 
-        if not application.config['DISABLE_AUTO_REFRESH']:
-            socketio.emit('appointment_update', result.data)
+        socketio.emit('appointment_update', result.data)
         
 
         return {"appointment": result.data,

@@ -166,7 +166,6 @@ export const stateModel: StateModelIF = {
   showInviteCitizenSpinner: false,
   showServiceModal: false,
   showTimeTrackingIcon: false,
-  showOfficeSwitcher: false,
   user: {
     counter_id: null,
     csr_id: null,

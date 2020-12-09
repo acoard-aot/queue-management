@@ -24,7 +24,7 @@ from app.utilities.auth_util import Role, has_any_role
 from app.utilities.auth_util import is_public_user
 from app.utilities.email import get_cancel_email_contents, send_email
 from app.utilities.snowplow import SnowPlow
-from qsystem import api, db, oidc, socketio, application
+from qsystem import api, db, oidc, socketio
 
 @api.route("/appointments/draft/<int:id>/", methods=["DELETE"])
 class AppointmentDraftDelete(Resource):
@@ -37,8 +37,7 @@ class AppointmentDraftDelete(Resource):
                                        .first_or_404()
 
         Appointment.delete_draft([id])
-        if not application.config['DISABLE_AUTO_REFRESH']:
-            socketio.emit('appointment_delete', id)
+        socketio.emit('appointment_delete', id)
 
         return {}, 204
 

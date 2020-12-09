@@ -11,7 +11,6 @@
  *
  */
 
-import { StateModelIF } from '@/interfaces'
 import Vue from 'vue'
 let _default_counter_id = null
 
@@ -298,15 +297,7 @@ export const commonMutation: any = {
   setBackOfficeList: (state, payload) =>
     (state.user.office.back_office_list = payload),
 
-  // Note: This method is for changing office TYPE, not office itself.
-  // I'm leaving it in as-is as it was written this way.  I've
-  // created a new mutation for changing offices themselves below.
   setOffice: (state, officeType) => (state.officeType = officeType),
-
-  /**
-   * Change the office a CSR is currently assigned to.
-   */
-  changeCSROffice: (state: StateModelIF, payload) => (state.user.office = payload),
 
   setDefaultCounter: (state, defaultCounter) => {
     state.addModalForm.counter = defaultCounter.counter_id
@@ -573,8 +564,6 @@ export const commonMutation: any = {
   },
 
   setOffsiteOnly: (state, payload) => (state.offsiteOnly = payload),
-  
-  setOfficeSwitcher: (state: StateModelIF, payload: boolean) => (state.showOfficeSwitcher = payload),
 
   toggleTimeTrackingIcon: (state, payload) =>
     (state.showTimeTrackingIcon = payload),

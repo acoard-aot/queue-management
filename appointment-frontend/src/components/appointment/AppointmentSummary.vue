@@ -40,12 +40,7 @@
               </div>
             </v-col>
             <v-col cols="12">
-              <template v-if='staticMapData.external_map_link'>
-                    <a class='link-w-icon mt-6' v-bind:href='staticMapData.external_map_link' target="_blank" rel="noopener noreferrer" :alt='`Open link for ${ staticMapData.civic_address}`'>
-                      <img :src="require('@/assets/img/officemaps/' + staticMapData.office_number)" :alt="staticMapData.civic_address" class='map-view'>
-                    </a>
-                  </template>
-                  <template v-else><img :src="require('@/assets/img/officemaps/' + staticMapData.office_number)" :alt="staticMapData.civic_address" class='map-view'></template>
+              <img :src="require('@/assets/img/officemaps/' + staticMapData.office_number)" :alt="staticMapData.civic_address" class='map-view'>
             </v-col>
           </v-row>
         </v-card>
@@ -210,8 +205,7 @@ export default class AppointmentSummary extends Mixins(StepperMixin) {
       office_number: this.currentOffice?.office_number ? this.currentOffice?.office_number.toString() + '.png' : '999.png',
       civic_address: this.currentOffice?.civic_address || '',
       latitude: this.currentOffice?.latitude || 0,
-      longitude: this.currentOffice?.longitude || 0,
-      external_map_link: this.currentOffice?.external_map_link || null
+      longitude: this.currentOffice?.longitude || 0
     }
   }
 
