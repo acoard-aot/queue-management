@@ -267,24 +267,30 @@ export default class Calendar extends Vue {
    * Called on every `updated()` CD.
    */
   disableSatSun() {
-    const headerElements = document.querySelectorAll('.v-calendar-daily_head-weekday')
-    const columnElements = document.querySelectorAll('.v-calendar-category__columns')
-    const numberElements = document.querySelectorAll('.v-calendar-daily_head-day-label')
+    const headerElements: NodeListOf<HTMLElement> = document.querySelectorAll('.v-calendar-daily_head-weekday')
+    const columnElements: NodeListOf<HTMLElement> = document.querySelectorAll('.v-calendar-category__columns')
+    const numberElements: NodeListOf<HTMLElement> = document.querySelectorAll('.v-calendar-daily_head-day-label')
 
-    headerElements.forEach((el: any, index) => {
-      if (WEEKEND_STRINGS.includes(el.innerText)) {
-        this.disableCalendarElement(el)
+    // Define function inside because we don't need to pollute the main body
+    // with heper function used in one place.
+    // function disableCalendarElement(el: HTMLElement) {
+    function disableCalendarElement(el: HTMLElement) {
+      return el.classList.add('disable-sat-sun')
+    }
+
+    headerElements.forEach((el: HTMLElement, index) => {
+      // For some strange reason, IE11 gets an illegal \u200e typesetting characters, 
+      // like hidden whitespace. Doesn't happen on any other browser.
+      const elText = el.textContent!.replace('\u200e', '').toUpperCase();
+      if (WEEKEND_STRINGS.includes(elText)) {
+        disableCalendarElement(el)
         // There are 2 columnElements per headerElement, we only care about second one.
         // For example, if Sat is index 1, we want to update index 8 of columnElements.
-        this.disableCalendarElement(columnElements[index + headerElements.length])
-        this.disableCalendarElement(numberElements[index])
+        disableCalendarElement(columnElements[index + headerElements.length])
+        disableCalendarElement(numberElements[index])
 
       }
     })
-  }
-
-  disableCalendarElement(el) {
-    return el.classList += ' disable-sat-sun'
   }
 
   fetchEvents ({ start, end }) {
