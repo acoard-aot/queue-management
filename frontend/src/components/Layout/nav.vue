@@ -60,7 +60,7 @@
         {{ calendarSetup.titleRef.title }}
       </div>
       <div />
-      <div v-if="showHamburger">
+      <div v-if="showHamburger" class='ml-auto'>
         <!-- 
           ARC:
           - Changing 'right' to 'left' helps a bit, but doesn't fix underlying issue
@@ -303,7 +303,7 @@ export default class Nav extends Vue {
 }
 .dash-button-flex-button-container {
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   width: 97%;
   padding: 10px;
   margin: 10px;
@@ -323,4 +323,5 @@ export default class Nav extends Vue {
   box-shadow: -4px 4px 4px 0px grey;
   cursor: pointer;
 }
+
 </style>
