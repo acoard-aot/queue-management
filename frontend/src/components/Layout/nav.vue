@@ -61,25 +61,12 @@
       </div>
       <div />
       <div v-if="showHamburger" class='ml-auto'>
-        <!-- 
-          ARC:
-          - Changing 'right' to 'left' helps a bit, but doesn't fix underlying issue
-          - Reverting this file to bcgov/master doesn't fix
-          -- Implies it's CSS changes elsewhere.
-
-          Reference, original commit, before this phase of AOT work:
-          4507769312d99090908f3009d42a0b0bd07fc36b
-          https://github.com/bcgov/queue-management/tree/4507769312d99090908f3009d42a0b0bd07fc36b
-          
-          boundary="window" helps with IE11 compat, otherwise we get horizontal scrolling
-          This DOES cause a "flash" as the component is rendered.
-         -->
         <b-dropdown
           variant="outline-primary"
           class="pl-0 ml-0 mr-3"
           right
           id="nav-dropdown"
-          boundary='window'
+          :popper-opts="dropdownPopperOpts"
         >
           <span slot="button-content">
             <font-awesome-icon icon="bars" style="font-size: 1.18rem" />
@@ -104,7 +91,7 @@
               id="office_agenda"
               >Office Agenda</b-dropdown-item
             >
-            <span v-if="user.role && user.role.role_code == 'GA'">
+            <template v-if="user.role && user.role.role_code == 'GA'">
               <b-dropdown-item @click="clickGAScreen" :class="gaPanelStyle">
                 <font-awesome-icon
                   v-if="showGAScreenModal"
@@ -118,7 +105,7 @@
                 <span style="font-weight: 400">Show GA Panel</span>
               </b-dropdown-item>
               <b-dropdown-divider />
-            </span>
+            </template>
             <b-dropdown-item v-if="showAdmin" to="/admin"
               >Administration</b-dropdown-item
             >
@@ -195,6 +182,15 @@ export default class Nav extends Vue {
   private flashIcon: boolean = true
   private showSpacer: boolean = false
   toggleTimeTrackingIcon: any
+
+  dropdownPopperOpts = {
+    modifiers: {
+      computeStyle: {
+        gpuAcceleration: false
+      }
+    }
+  }
+
 
   @Watch('showIcon')
   onShowIconChange (newV: any, oldV: any) {
