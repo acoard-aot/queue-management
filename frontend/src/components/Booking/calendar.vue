@@ -275,7 +275,6 @@ export default class Calendar extends Vue {
     // with heper function used in one place.
     // function disableCalendarElement(el: HTMLElement) {
     function disableCalendarElement(el: HTMLElement) {
-      console.log('Disabling element:', el)
       return el.classList.add('disable-sat-sun')
     }
 
@@ -284,7 +283,6 @@ export default class Calendar extends Vue {
       // like hidden whitespace. Doesn't happen on any other browser.
       const elText = el.textContent!.replace('\u200e', '').toUpperCase();
       if (WEEKEND_STRINGS.includes(elText)) {
-        console.log('Disabling', index);
         disableCalendarElement(el)
         // There are 2 columnElements per headerElement, we only care about second one.
         // For example, if Sat is index 1, we want to update index 8 of columnElements.
