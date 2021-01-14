@@ -58,7 +58,7 @@
               id="appointment-calendar"
             >
               <template v-slot:event="date">
-                <v-tooltip bottom class="mytooltip" v-bind:fixed="false" v-bind:nudge-top="150">
+                <v-tooltip bottom class="mytooltip" v-bind:allow-overflow="true" v-bind:fixed="false" v-bind:nudge-top="150">
                   <template v-slot:activator="{ on }">
                     <div v-on="on" class="ml-2">
                       {{ date.event.title }} {{ date.eventParsed.start.time }} -
